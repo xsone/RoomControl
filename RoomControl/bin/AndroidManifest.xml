@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.roomcontrol"
+    android:versionCode="3"
+    android:versionName="0.6" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="17" />
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+	<uses-permission android:name="android.permission.BLUETOOTH" />
+	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/roomcontrol_icon"
+        android:label="RoomControl"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.roomcontrol.MainActivity"
+            android:label="@string/app_name" 
+            android:screenOrientation = "portrait"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="com.roomcontrol.DeviceListActivity"
+                  android:label="@string/select_BTdevice"
+                  android:textColor="#ecad14"
+                  android:theme="@android:style/Theme.Holo.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
+        
+        <activity android:name="com.roomcontrol.UserInfoActivity"
+                  android:label="@string/select_BTdevice"
+                  android:textColor="#ecad14"
+                  android:theme="@android:style/Theme.Holo.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
+        
+        <activity 
+	   			  android:name="com.roomcontrol.Prefs" 
+	   			  android:label="@string/app_name" /> 
+        
+        <service
+            android:name="com.roomcontrol.BluetoothChatService"
+            android:enabled="true" />
+        
+      
+      
+        
+    </application>
+
+</manifest>

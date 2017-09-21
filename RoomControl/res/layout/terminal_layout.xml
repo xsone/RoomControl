@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+  
+	<LinearLayout 
+  	  android:layout_width="match_parent"
+   	  android:id="@+id/linearLayout1" 
+   	  android:layout_height="wrap_content">
+        
+      <EditText
+        android:layout_weight="1" 
+        android:id="@+id/command_line"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/input_frame"
+        android:ems="10"
+        android:inputType="text"
+        android:textColor="#0000ee"
+        android:textSize="20sp" />
+
+      <Button
+          android:id="@+id/send_command"
+          style="@style/ButtonText"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/btn_blue"
+          android:text="@string/command_button"
+          android:textColor="#000000" />
+  </LinearLayout>	 
+ 	   
+ 	 
+  
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+   	
+  	<Button
+        android:id="@+id/button_start_meting"
+       	style="@style/ButtonText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_weight="1"
+        android:background="@drawable/btn_green"
+        android:text="@string/start_meting"
+        android:textColor="#000000" />
+      	 
+	<Button
+ 	    android:id="@+id/button_save_meting"
+ 	    style="@style/ButtonText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_weight="1"
+        android:background="@drawable/btn_yellow"
+        android:text="@string/save_meting"
+        android:textColor="#000000" />
+	
+	
+	<?Button
+ 	    android:id="@+id/button_test_meting"
+ 	    style="@style/ButtonText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+		android:clickable="true"
+        android:layout_weight="1"
+        android:background="@drawable/btn_yellow"
+        android:text="@string/test_meting"
+        android:textColor="#000000" /?>
+	
+	
+	<Button
+ 	    android:id="@+id/button_read_file"
+ 	    style="@style/ButtonText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_weight="1"
+        android:background="@drawable/btn_red"
+        android:text="@string/read_file"
+        android:textColor="#000000" />
+	
+	
+  
+  <ListView
+        android:id="@+id/in"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:layout_weight="1" 
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
+  </LinearLayout> 
+  
+  
+  <ScrollView
+		android:id="@+id/SCROLLER_ID"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:scrollbarSize="50dip"
+		android:fadeScrollbars="false"
+		android:scrollbars="vertical"
+		android:transcriptMode="alwaysScroll"
+		android:stackFromBottom="true"
+		android:background="#000000" 
+		android:fillViewport="true"> 
+	
+    <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+        
+    <TextView
+        android:id="@+id/msgWindow"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="500"
+        android:text="@string/display"
+        android:textColor="#00ff00"
+        android:textSize="20sp" />
+    
+    <TextView
+        android:id="@+id/tvTempView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/actual_temp"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        />
+    
+    <TextView
+        android:id="@+id/tvTemp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_temp"
+        android:textSize="30sp"
+        android:textColor="#FFFFFF"
+      />
+    
+    
+	 </LinearLayout>     
+    </ScrollView>
+</LinearLayout>

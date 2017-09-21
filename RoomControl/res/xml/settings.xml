@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+   <PreferenceCategory >
+    <!--  android:title="Settings" -->
+    
+     <EditTextPreference
+        android:key="btMacAddress"
+        android:title="BT MacAddress"
+        android:summary="BT MacAddress"
+        android:dialogTitle="Enter BT MacAddress"
+        android:phoneNumber="true"
+        android:defaultValue="00:12:12:04:10:57" 
+        android:inputType="text" 
+       />
+     
+     <EditTextPreference
+        android:key="emailaddress"
+        android:title="Email Address"
+        android:summary="Send alarm by email"
+        android:dialogTitle="Enter Email Address"
+        android:defaultValue="xsone2@gmail.com" 
+        android:inputType="textEmailAddress" 
+        />
+     
+     <EditTextPreference
+        android:key="noMoveDelay"
+        android:title="Stop delay No Movement (sec.)"
+        android:summary="Set delay to stop when no movement"
+        android:dialogTitle="Enter delay (sec.)"
+        android:defaultValue="5" 
+        android:inputType="numberDecimal" 
+        />
+     
+     <EditTextPreference
+        android:key="alarmdelay"
+        android:title="Alarm Delay Time (sec.)"
+        android:summary="Alarm delay time till sending a message"
+        android:dialogTitle="Enter Delay Time in sec"
+        android:defaultValue="1" 
+        android:inputType="numberDecimal" 
+        />
+    
+    <!-- CheckBoxPreference
+        android:key="sms"
+        android:title="@string/menu_sms"
+        android:summary="@string/menu_sms"
+        android:defaultValue="false" /> 
+     
+    <CheckBoxPreference 
+        android:key="email"
+        android:title="@string/menu_email"
+        android:summary="@string/menu_email"
+        android:defaultValue="false" />
+    
+    <CheckBoxPreference
+        android:key="facebook"
+        android:title="@string/menu_facebook"
+        android:summary="@string/menu_facebook"
+        android:defaultValue="false" />
+    
+    <CheckBoxPreference
+        android:key="tweet"
+        android:title="@string/menu_twitter"
+        android:summary="@string/menu_twitter"
+        android:defaultValue="false" />
+    
+     <CheckBoxPreference
+        android:key="whatsapp"
+        android:title="@string/menu_whatsapp"
+        android:summary="@string/menu_whatsapp"
+        android:defaultValue="false" />
+   
+     <CheckBoxPreference
+        android:key="log"
+        android:title="@string/menu_log"
+        android:summary="@string/menu_log"
+        android:defaultValue="false" />
+   
+   	 <CheckBoxPreference
+        android:key="sound"
+        android:title="@string/menu_sound"
+        android:summary="@string/menu_sound"
+        android:defaultValue="false" />
+     -->   
+     </PreferenceCategory>
+ </PreferenceScreen>

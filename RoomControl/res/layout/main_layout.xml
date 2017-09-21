@@ -1,0 +1,168 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#000000"
+    android:orientation="vertical" 
+    android:gravity="center_vertical"
+    android:keepScreenOn="true"
+    >
+	<LinearLayout
+	  	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:background="#000000"
+    	android:orientation="horizontal"
+    >   
+	
+		<Button
+	        android:id="@+id/button_kamer1"
+	       	style="@style/ButtonText"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:clickable="true"
+	        android:layout_weight="1"
+	        android:text="@string/kamer1"
+	        android:background="@android:color/white"
+	        android:textSize="15sp"
+	        android:textColor="#000000" />
+	    
+	    <Button
+	 	    android:id="@+id/button_kamer2"
+	 	    style="@style/ButtonText"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:clickable="true"
+	        android:layout_weight="1"
+	        android:text="@string/kamer2"
+	        android:background="@android:color/white"
+	        android:textSize="15sp"
+	        android:textColor="#000000" />
+		
+		<Button
+	 	    android:id="@+id/button_kamer3"
+	 	    style="@style/ButtonText"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:clickable="true"
+	        android:layout_weight="1"
+	        android:text="@string/kamer3"
+	        android:background="@android:color/white"
+	        android:textSize="15sp"
+	        android:textColor="#000000" />
+	</LinearLayout>
+
+	<!-- 
+		<ListView
+		    android:id="@+id/in"
+		    android:layout_width="match_parent"
+		    android:gravity="center_vertical"
+		    android:layout_height="0dp"
+		    android:layout_weight="1" />
+		    android:stackFromBottom="true"
+		    android:transcriptMode="alwaysScroll" />
+  	-->
+
+	<!--   	
+	<TextView
+        android:id="@+id/tvHumiView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/actual_humi"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF" />
+	-->
+	 <TextView
+        android:id="@+id/tvHumi"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/start_humi"
+        android:textSize="30sp"
+        android:textColor="#FFFFFF" />
+	
+	<!-- 
+    <TextView
+        android:id="@+id/tvTempView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/actual_temp"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF" />
+    -->
+    
+    <TextView
+        android:id="@+id/tvTemp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/start_temp"
+        android:textSize="80sp"
+        android:textColor="#FFFFFF" />
+    
+   <!-- 
+   <TextView
+        android:id="@+id/spTempView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/adjust_temp"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF" 
+       />
+    -->
+    
+		<TextView
+	        android:id="@+id/spTemp"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:text="@string/start_sptemp"
+	        android:textSize="30sp"
+	        android:textColor="#FFFFFF" />
+    
+    
+    <LinearLayout
+	  	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:background="#000000"
+    	android:orientation="horizontal"
+    >   
+	
+		<Button
+	        android:id="@+id/button_min"
+	       	style="@style/ButtonText"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:clickable="true"
+	        android:layout_weight="1"
+	        android:text="@string/button_min"
+	        android:background="@android:color/white"
+	        android:textSize="35sp"
+	        android:textColor="#000000" />
+		
+	    <Button
+	 	    android:id="@+id/button_plus"
+	 	    style="@style/ButtonText"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:clickable="true"
+	        android:layout_weight="1"
+	        android:text="@string/button_plus"
+	        android:background="@android:color/white"
+	        android:textSize="35sp"
+	        android:textColor="#000000" />
+	   </LinearLayout>
+    
+	<!--    
+    <SeekBar
+        android:id="@+id/seekBar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:max="35"
+        android:progress="0"
+        android:minHeight="50dip"
+        android:maxHeight="20dip"
+        android:thumb="@drawable/temp_tumb" />
+    -->    
+   </LinearLayout>

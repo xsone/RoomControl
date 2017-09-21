@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    	<!--  General values -->
+    <string name="app_name">RoomControl</string>
+    <string name="app_name_lite">RoomControl (LITE)</string>
+    <string name="action_settings">Settings</string>
+  	<string name="meetwaarde">Meet waarde</string>
+    <string name="filewaarde">File waarde</string>
+    <string name="sample_name">Stof naam</string>
+    <string name="start_meting">Start Sampling</string>
+    <string name="stop_meting">Stop</string>
+    <string name="save_meting">Save to Sample File</string>
+    <string name="test_meting">Test</string>
+    <string name="read_file">Read Sample File</string>
+    <string name="show_alert_dialog">Alert</string>
+    <string name="kamer1">CV</string>
+    <string name="kamer2">MOVE</string>
+    <string name="kamer3">SMOKE</string>
+    <string name="button_min">-</string>
+    <string name="button_plus">+</string>
+    <string name="kamer_nummer">Kamer</string>
+    <string name="actual_kamer">Kamer 1</string>
+    <string name="actual_temp">Temperature</string>
+    <string name="start_temp">15.0 °C</string>
+    <string name="actual_humi">Humidity</string>
+    <string name="start_humi">20.0 %</string>
+    <string name="adjust_temp">Adjust New Setpoint</string>
+    <string name="start_sptemp">10.0 °C</string>
+    <string name="geek_view">Geek View</string>
+    <string name="data_view">Data View</string>
+   	<string name="start">Start</string>
+    <string name="display">Data Stream</string>  
+    <string name="action_start">Start</string> 
+    <string name="command_button">Test</string>
+    
+         <!--  BluetoothChat -->
+    <string name="send">Send</string>
+    <string name="not_connected">You are not connected to a device</string>
+    <string name="bt_not_enabled_leaving">Bluetooth is not enabled. Leaving Bluetooth Chat.</string>
+    <string name="title_connecting">Connecting&#8230;</string>
+    <string name="title_connected_to">Connected</string>
+    <string name="title_not_connected">Not Connected</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_exit">Exit App</string>
+    
+        <!--  DeviceListActivity -->
+    <string name="scanning">Scanning&#8230;</string>
+    <string name="select_BTdevice">Select a Device</string>
+    <string name="none_paired">No Devices Paired</string>
+    <string name="none_found">No Devices Found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for Devices</string>
+    
+     	<!--  Buttons -->
+    <style name="ButtonText">
+	    <item name="android:layout_width">fill_parent</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:textColor">#ffffff</item>
+	    <item name="android:gravity">center</item>
+	    <item name="android:layout_margin">3dp</item>
+	    <item name="android:textSize">25sp</item>
+	    <item name="android:textStyle">bold</item>
+	    <item name="android:shadowColor">#000000</item>
+	    <item name="android:shadowDx">1</item>
+	    <item name="android:shadowDy">1</item>
+	    <item name="android:shadowRadius">2</item>
+	</style>
+</resources>
+
+
+
+
+
+
+
+
