@@ -39,14 +39,9 @@
         android:defaultValue="1" 
         android:inputType="numberDecimal" 
         />
+        
     
-    <!-- CheckBoxPreference
-        android:key="sms"
-        android:title="@string/menu_sms"
-        android:summary="@string/menu_sms"
-        android:defaultValue="false" /> 
-     
-    <CheckBoxPreference 
+    <!--CheckBoxPreference 
         android:key="email"
         android:title="@string/menu_email"
         android:summary="@string/menu_email"

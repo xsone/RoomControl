@@ -41,20 +41,12 @@ public class DeviceListActivity extends Activity {
 	// Debugging
 	private static final String TAG = "DeviceListActivity";
 	private static final boolean D = true;
-
-	// Return Intent extra
-	public static String EXTRA_DEVICE_ADDRESS = "device_address";
-	//public static String myMacAddress = "00:19:5D:24:E5:4A"; //OBD11 adapter
-	//public static String myMacAddress = "20:14:08:05:41:72"; //Itead
-	//public static String partnerDevAdd1 = "20:14:08:05:41:72"; //Itead
-	//public static String partnerDevAdd = "00:12:12:04:10:57"; //linvor
-	
-	//public static String partnerDevAdd = "00:11:07:19:00:40"; //ACC-BT02 eerder connected
-	
-	
+	public String btMacAddress;
 	public boolean isConnected=true;
 	private static BluetoothChatService mChatService = null;
 	
+	// Return Intent extra
+    public static String EXTRA_DEVICE_ADDRESS = "device_address";
 	
 	// Member fields
 	private BluetoothAdapter mBtAdapter;
@@ -70,6 +62,10 @@ public class DeviceListActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//SharedPreferences myPreference=PreferenceManager.getDefaultSharedPreferences(this);
+	    //SharedPreferences.Editor myPreferenceEditor = myPreference.edit();
+	 	//myPreferenceEditor.putString("btMacAddress", "11:00:00:00:00:00").commit();//test
+		
 		// Setup the window
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.device_list);
@@ -90,10 +86,8 @@ public class DeviceListActivity extends Activity {
 		// one for newly discovered devices
 		mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
 		mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
-		
 		arrayListPairedBluetoothDevices = new ArrayList<BluetoothDevice>();
-		
-
+	
 		// Find and set up the ListView for paired devices
 		ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
 		pairedListView.setAdapter(mPairedDevicesArrayAdapter);
@@ -116,14 +110,15 @@ public class DeviceListActivity extends Activity {
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// Get a set of currently paired devices
-		Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
+		Set<BluetoothDevice> pairedBTDevices = mBtAdapter.getBondedDevices();
 
 		
 		// If there are paired devices, add each one to the ArrayAdapter
-		if (pairedDevices.size() > 0) {
+		if (pairedBTDevices.size() > 0) {
 			findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
-			for (BluetoothDevice device : pairedDevices) {
-				mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+			for (BluetoothDevice BTdevice : pairedBTDevices) {
+				mPairedDevicesArrayAdapter.add(BTdevice.getName() + "\n" + BTdevice.getAddress());
+			
 				//mChatService.connect(device, true); //jcp
 				//arrayListPairedBluetoothDevices.add(device); //jcp
 			}
@@ -180,17 +175,23 @@ private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
 
 		//Get the device MAC address, which is the last 17 chars in the View
 		String info = ((TextView) v).getText().toString();
-		String address = info.substring(info.length() - 17);
-	
-		// Create the result Intent and include the MAC address
-		Intent intent = new Intent();
-		intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-
-		// Set result and finish this Activity
-		setResult(Activity.RESULT_OK, intent);
-		finish();
+		btMacAddress = info.substring(info.length() - 17);
+		
+		//Toast.makeText(DeviceListActivity.this, "BT-Address: " + btMacAddress, Toast.LENGTH_LONG).show();
+		//SharedPreferences.Editor editor = Prefs.edit();
+    	//editor.putString("btMacAddress", btMacAddress);
+    	//editor.commit();
+    	
+	    // Create the result Intent and include the MAC address
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_DEVICE_ADDRESS, btMacAddress);
+        
+        // Set result and finish this Activity
+        setResult(Activity.RESULT_OK, intent);
+        finish();
 	   }
-	};
+	
+};
 	
 // The BroadcastReceiver that listens for discovered devices and
 // changes the title when discovery is finished
@@ -206,6 +207,8 @@ private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
           // Get the BluetoothDevice object from the Intent
           BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+          
+          
           //String address = device.getAddress();
           	
            // Check if the found device is one we had comm with
@@ -216,6 +219,7 @@ private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         //    		mNewDevicesSet.add(address);
           	if (device.getBondState() != BluetoothDevice.BOND_BONDED){
             		mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+            		
             		 
             	}
             // When discovery is finished, change the Activity title
@@ -226,7 +230,7 @@ private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
                     String noDevices = getResources().getText(R.string.none_found).toString();
                     mNewDevicesArrayAdapter.add(noDevices);
                 }
-               // scanButton.setVisibility(View.VISIBLE);
+                //scanButton.setVisibility(View.VISIBLE);
             }
        
        /*
@@ -255,9 +259,9 @@ private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
     };
     
        
-    private void connectToExisting(BluetoothDevice device){
+  //  private void connectToExisting(BluetoothDevice device){
       //  new ConnectThread(device);
-    }
+   // }
  };
 }   
 	

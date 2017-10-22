@@ -119,7 +119,7 @@ public class BluetoothChatService {
 		mState = state;
 
 		// Give the new state to the Handler so the UI Activity can update
-		mHandler.obtainMessage(MainActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+		mHandler.obtainMessage(RCMainActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
 	}
 
 	/**
@@ -205,9 +205,9 @@ public class BluetoothChatService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(RCMainActivity.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(MainActivity.DEVICE_NAME, device.getName());
+        bundle.putString(RCMainActivity.DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -265,9 +265,9 @@ public class BluetoothChatService {
     private void connectionFailed() {
     	setState(STATE_LISTEN); //jcp
     	// Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(RCMainActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(MainActivity.TOAST, "Unable to connect device");
+        bundle.putString(RCMainActivity.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -281,9 +281,9 @@ public class BluetoothChatService {
     private void connectionLost() {
     	setState(STATE_LISTEN); //jcp
     	// Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(RCMainActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(MainActivity.TOAST, "Device connection was lost");
+        bundle.putString(RCMainActivity.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -508,7 +508,7 @@ public class BluetoothChatService {
                     byte[] buffer_clone = new byte[1024];
                     System.arraycopy(buffer, 0, buffer_clone, 0, bytes);
                     
-                        mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer_clone)
+                        mHandler.obtainMessage(RCMainActivity.MESSAGE_READ, bytes, -1, buffer_clone)
                                 .sendToTarget();
                         //mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, sb.toString().trim().getBytes())
                        // .sendToTarget(); //jcp
@@ -532,7 +532,7 @@ public class BluetoothChatService {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(MainActivity.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(RCMainActivity.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);

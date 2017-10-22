@@ -55,9 +55,6 @@ public final class R {
     }
     public static final class id {
         public static final int SCROLLER_ID=0x7f0c0014;
-        public static final int button_kamer1=0x7f0c0005;
-        public static final int button_kamer2=0x7f0c0006;
-        public static final int button_kamer3=0x7f0c0007;
         public static final int button_min=0x7f0c000b;
         public static final int button_plus=0x7f0c000c;
         public static final int button_read_file=0x7f0c0012;
@@ -66,6 +63,9 @@ public final class R {
         public static final int button_start_meting=0x7f0c0010;
         public static final int command_line=0x7f0c000e;
         public static final int in=0x7f0c0013;
+        public static final int ledCV=0x7f0c0005;
+        public static final int ledMove=0x7f0c0006;
+        public static final int ledSmoke=0x7f0c0007;
         public static final int linearLayout1=0x7f0c000d;
         public static final int menu_exit=0x7f0c0019;
         public static final int menu_settings=0x7f0c0018;

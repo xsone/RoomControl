@@ -79,7 +79,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 //public abstract class MainActivity extends Activity implements OnClickListener,
 //public class MainActivity extends Activity implements OnClickListener, OnSeekBarChangeListener {
-public class MainActivity extends Activity {	
+public class RCMainActivity extends Activity {	
 	
 	private static final String TAG = "RoomControl";
 	//private ListView mConversationView;
@@ -94,15 +94,13 @@ public class MainActivity extends Activity {
 	// Member object for the chat services
 	private static BluetoothChatService mChatService = null;
 	
+	static DeviceListActivity mBTMacAddress = null;
 	//ArrayList<BluetoothDevice> arrayListBluetoothDevices = null;
-	
 	
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
 	private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
 	private static final int REQUEST_ENABLE_BT = 3;
-	
-	public MediaPlayer mMediaPlayer;
 	
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
@@ -117,12 +115,8 @@ public class MainActivity extends Activity {
 	public static final String DEVICE_NAME = "device_name";
 	public static final String TOAST = "toast";
 	
-	//private String partnerDevAdd="00:11:07:19:00:40"; //ACC-BT02 eerder connected
-	//private String partnerDevAdd="20:14:08:05:41:72"; //itead eerder connected
-	//public static String partnerDevAdd = "00:12:12:04:10:57"; //linvor
-	public static String btAddress = "00:12:12:04:10:57"; //linvor
-	//public static String lastConnectedDevice;
-	//public static String btAddressTest = "20:14:08:05:41:72";
+	//public static String btMacAddress = "00:12:12:04:10:57"; //linvor = thermostaat werkt vanuit hardcoded
+	public static String btMacAddress; //linvor vanuit prefs settings
 	
 	//CVserver settings
 	String cv_server_url = "http://192.168.178.80:8888"; // final URL after
@@ -132,15 +126,13 @@ public class MainActivity extends Activity {
 	public boolean CVSTATE = false;
 	public boolean SPSTATE = false;
 	public boolean MOVE = true;
+	public boolean BTCONNECT = false;
 		
 	public BluetoothDevice btDevice;
-	public BluetoothDevice btDeviceTest;
 	boolean btSecure;
-	public String btAction;
-	public int btState = 0;
+	
 	public int moveTest = 0;
 	public int smokeTest = 0;
-	
 	public int gemTeller = 0;
 	public int gemAantal = 25;
 	public int spStartTeller = 0;
@@ -150,12 +142,14 @@ public class MainActivity extends Activity {
 	//public InputStream mmInStream = null;
 	public String[] readStringValuesTest;
 	
+	public MediaPlayer mMediaPlayer;
+	
 	TextView tvTemp;
 	TextView spTemp;
 	TextView tvHumi;
-	Button btnKamer1;
-	Button btnKamer2;
-	Button btnKamer3;
+	Button ledCV;
+	Button ledMove;
+	Button ledSmoke;
 	Button btnMin;
 	Button btnPlus;
 	
@@ -170,6 +164,8 @@ public class MainActivity extends Activity {
 	public float progress = 11; //*
 	public Timer autoUpdate;
 	public long cvOnTimer = 10000; //waarde wordt preferences
+	public int cvStateTeller = 0;
+	
 	//OnCreate screens maken
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -179,11 +175,9 @@ public class MainActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.main_layout);
 	
-	//seekBar = (SeekBar) findViewById(R.id.seekBar2);
-
-	btnKamer1 = (Button) findViewById(R.id.button_kamer1);
-	btnKamer2 = (Button) findViewById(R.id.button_kamer2);
-	btnKamer3 = (Button) findViewById(R.id.button_kamer3);
+	ledCV = (Button) findViewById(R.id.ledCV);
+	ledMove = (Button) findViewById(R.id.ledMove);
+	ledSmoke = (Button) findViewById(R.id.ledSmoke);
 	
 	tvHumi = (TextView) findViewById(R.id.tvHumi);
 	tvTemp = (TextView) findViewById(R.id.tvTemp);
@@ -196,41 +190,15 @@ public class MainActivity extends Activity {
 	//seekBar.setMax(60);
 	//seekBar.setOnSeekBarChangeListener(this);
 	
-	readStringValues[1] = "11.1";
-	readStringValues[2] = "22.2";
-	readStringValues[3] = "0";
-	readStringValues[4] = "0";				
-	
-	/*
-	Button minButton = (Button) findViewById(R.id.button_min);
-	minButton.setOnClickListener(new OnClickListener() {
-		public void onClick(View arg0) {
-		}
-	});
-	
-	Button plusButton = (Button) findViewById(R.id.button_plus);
-	plusButton.setOnClickListener(new OnClickListener() {
-		public void onClick(View arg0) {
-		}
-	});
-	*/
-	
+	//Start waarden
+	readStringValues[1] = "11.1"; //Temperatuur startwaarde
+	readStringValues[2] = "22.2"; //Humidity startwaarde
+	readStringValues[3] = "0"; //Move detect
+	readStringValues[4] = "0"; //Smoke detect				
 	
 	// Get local Bluetooth adapter
 	mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-	
-	//startService(new Intent(this, BLEService.class)); //BLE service
-	//startService(new Intent(this, BluetoothChatService.class)); //BLE service
 	Log.d(TAG, "Adapter: " + mBluetoothAdapter);
-	 // Start the  service
-    //public void startService(View view) {
-    //    startService(new Intent(this, BluetoothChatService.class));
-    //}
-
-    // Stop the  service
-     //   public void stopNewService(View view) {
-     //      stopService(new Intent(this, BLEService.class));
-      //  }
 		
 	// If the adapter is null, then Bluetooth is not supported
 	if (mBluetoothAdapter == null) {
@@ -254,32 +222,34 @@ public class MainActivity extends Activity {
 		Intent serverIntent = null;
 		switch (item.getItemId()) {
 		case R.id.secure_connect_scan:
-				// Launch the DeviceListActivity to see devices and do scan
-				serverIntent = new Intent(this, DeviceListActivity.class);
-				startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
-				return true;
-			case R.id.menu_settings:
-		    		startActivity(new Intent(this, Prefs.class));
-		    		break;
-		    case R.id.menu_exit:
-		    		onDestroy();
-		    		break;
-			default: break;
+		     // Launch the DeviceListActivity to see devices and do scan
+			 serverIntent = new Intent(this, DeviceListActivity.class);
+			 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+			 return true;
+		case R.id.menu_settings:
+	      	 startActivity(new Intent(this, Prefs.class));
+	    	 break;
+	    case R.id.menu_exit:
+	      	 onDestroy();
+		     break;
+			 default: break;
 		}
 	 return super.onOptionsItemSelected(item);
 	}		
 		
-	//Start programma
+	//Start programma zichtbaar op het display
 	//@Override
 	public void onStart(){
 		super.onStart();
-	    
-		//Intent data = null;
+		//Haal Prefs op
 		SharedPreferences myPreference=PreferenceManager.getDefaultSharedPreferences(this);
 	    SharedPreferences.Editor myPreferenceEditor = myPreference.edit();
-	    myPreferenceEditor.putString("btMacAddress", btAddress);
-	    String noMoveDelay = myPreference.getString("noMoveDelay","");
-	    noMoveTimer = Integer.valueOf(noMoveDelay);
+	    myPreferenceEditor.putString("btMacAddress", "00:12:12:04:10:57").commit();//test
+	    btMacAddress = myPreference.getString("btMacAddress","");
+		Toast.makeText(this, "BT-Address: " + btMacAddress, Toast.LENGTH_LONG).show(); //test
+		
+	    //String noMoveDelay = myPreference.getString("noMoveDelay","");
+	    //noMoveTimer = Integer.valueOf(noMoveDelay);
 	    //noMoveTimer = 10000;
 	    
 	    addListenerOnButtonMin();
@@ -292,16 +262,11 @@ public class MainActivity extends Activity {
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 		// Otherwise, setup the chat session
 		} else {
-			if (mChatService == null) 
-				setupChat(); //orgineel
-			//btAddress = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-			//btAddress = BluetoothDevice.EXTRA_DEVICE;
-			//data = new Intent(this, DeviceListActivity.class);
-			//connectDevice(data, true);
-			//btAddress = myPreference.getString("btAddress","");  
-			btDevice = mBluetoothAdapter.getRemoteDevice(btAddress);
+			if (mChatService == null) setupChat(); //orgineel
+			btDevice = mBluetoothAdapter.getRemoteDevice(btMacAddress);
+			//startService(new Intent(this, BluetoothChatService.class)); //stop BT connection
 			mChatService.connect(btDevice, btSecure);
-		}
+		  }
 	}
 	
 	@Override
@@ -329,19 +294,15 @@ public class MainActivity extends Activity {
 	}
 
 	//@Override
+	//Activity wordt nog steeds volledig uitgvoerd maar niet zichtbaar op display. 
+	//Maar kan wel beeindigd worden door systeem als er bijv. te weinig ruimte is.
 	public void onPause() {
 	super.onPause();
-		Toast.makeText(this, " BT Pause Service Started", Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, " BT Pause Service Started", Toast.LENGTH_LONG).show();
 		
-		//Test Autoconnect last bonded device
-		//Intent intent = getIntent();
-	    //lastConnectedDevice = intent.getStringExtra(DeviceListActivity.partnerDevAdd1);
-		//mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-		//btDevice = mBluetoothAdapter.getRemoteDevice(lastConnectedDevice); //direct verbinden met 
-		
-	    //btDevice = mBluetoothAdapter.getRemoteDevice(partnerDevAdd); //direct verbinden met
-	    btDevice = mBluetoothAdapter.getRemoteDevice(btAddress); //direct verbinden met
-	    mChatService.connect(btDevice, true);
+		//Autoconnectd werkte maar crashed soms
+		//btDevice = mBluetoothAdapter.getRemoteDevice(btMacAddress); //direct verbinden met
+	    //mChatService.connect(btDevice, true);
 	    
 	    
 	//	Toast.makeText(this, "Pause: BT Service Destroyed", Toast.LENGTH_LONG).show();
@@ -350,12 +311,15 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
+	//Verbindingen blijven wel intact als er een nieuwe activity wordt gestart.
 	public void onStop() {
 		super.onStop();
-		//stopService(new Intent(this, BluetoothChatService.class)); //stop BT connection
-		Toast.makeText(this, " BT Stop Service Started", Toast.LENGTH_LONG).show();
-		btDevice = mBluetoothAdapter.getRemoteDevice(btAddress); //direct verbinden met 
-		mChatService.connect(btDevice, true);
+		
+		//Toast.makeText(this, " BT Stop Service Started", Toast.LENGTH_LONG).show();
+		//btDevice = mBluetoothAdapter.getRemoteDevice(btMacAddress); //direct verbinden met 
+		//mChatService.connect(btDevice, true);
+		
+		
 		//Toast.makeText(this, "Stop: BT Service Destroyed", Toast.LENGTH_LONG).show();
 		//autoUpdate.cancel();
 		//finish();
@@ -366,7 +330,7 @@ public class MainActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		//stopService(new Intent(this, BluetoothChatService.class)); //stop BT connection
+		stopService(new Intent(this, BluetoothChatService.class)); //stop BT connection
 		Toast.makeText(this, "Destroy: BT Service Destroyed", Toast.LENGTH_LONG).show();
 		//mChatService.connect(btDevice, true); //BLE
 		autoUpdate.cancel();
@@ -430,9 +394,12 @@ public class MainActivity extends Activity {
 	
 	private void connectDevice(Intent data, boolean btSecure) {
 		// Get the device MAC address
-		btAddress = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+		//SharedPreferences myPreference=PreferenceManager.getDefaultSharedPreferences(this);
+		//public String EXTRA_DEVICE_ADDRESS = myPreference.getString("btMacAddress","");
+		//btMacAddress = myPreference.getString("btMacAddress","");
+		//btAddress = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
 		// Get the BluetoothDevice object
-		BluetoothDevice btDevice = mBluetoothAdapter.getRemoteDevice(btAddress);
+		BluetoothDevice btDevice = mBluetoothAdapter.getRemoteDevice(btMacAddress);
 			// Attempt to connect to the device
 		mChatService.connect(btDevice, btSecure);
 	}
@@ -447,6 +414,7 @@ public class MainActivity extends Activity {
 					switch (msg.arg1) {
 						case BluetoothChatService.STATE_CONNECTED:
 							setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
+							BTCONNECT = true;
 							mConversationArrayAdapter.clear();
 							//onConnect();
 							break;
@@ -456,13 +424,14 @@ public class MainActivity extends Activity {
 						case BluetoothChatService.STATE_LISTEN:
 						case BluetoothChatService.STATE_NONE:
 							setStatus(R.string.title_not_connected);
+							BTCONNECT = false;
 							break;
 					}
 					break;
 				case MESSAGE_WRITE:
 					break;
 				case MESSAGE_READ:
-					btState = 1;
+					//btState = 1;
 					byte[] readBuf = (byte[]) msg.obj;
 					// stop de bytes in een buffer 
 					//String readMessage = new String(readBuf);
@@ -511,8 +480,8 @@ public class MainActivity extends Activity {
 			//Toast.makeText(getApplicationContext(),readStringValues[2],Toast.LENGTH_SHORT).show();
 			
 			if ( Integer.valueOf(readStringValues[3])== 0) {
-				 btnKamer2.setBackgroundColor(Color.WHITE);
-				 btnKamer2.setText("NO MOVE");
+				 ledMove.setBackgroundColor(Color.WHITE);
+				 ledMove.setText("NO MOVE");
 				 if (MOVE == true)
 				  {	 
 				   noMoveTimer = System.currentTimeMillis();
@@ -521,8 +490,8 @@ public class MainActivity extends Activity {
 				 //Toast.makeText(getApplicationContext(), MOVE + ": " + String.valueOf(noMoveTimer),Toast.LENGTH_SHORT).show();
 			}
 			if ( Integer.valueOf(readStringValues[3])== 1) {
-				btnKamer2.setBackgroundColor(Color.RED);
-				btnKamer2.setText("MOVE");
+				ledMove.setBackgroundColor(Color.RED);
+				ledMove.setText("MOVE");
 				btnPlus.setBackgroundColor(Color.WHITE);
 				//if (MOVE == false) 
 				// { 	
@@ -540,12 +509,12 @@ public class MainActivity extends Activity {
 		if (readStringValues[4].length()==1)
 		{
 			if ( Integer.valueOf(readStringValues[4])== 0) {
-				 btnKamer3.setBackgroundColor(Color.WHITE);
-				 btnKamer3.setText("No Smoke");
+				 ledSmoke.setBackgroundColor(Color.WHITE);
+				 ledSmoke.setText("No Smoke");
 			}
 			if ( Integer.valueOf(readStringValues[4])== 1) {
-				btnKamer3.setBackgroundColor(Color.RED);
-				btnKamer3.setText("Smoke Detected");
+				ledSmoke.setBackgroundColor(Color.RED);
+				ledSmoke.setText("Smoke Detected");
 				}
 		}
 	}
@@ -592,6 +561,7 @@ public class MainActivity extends Activity {
 		//try {
 		 //Toast.makeText(getApplicationContext(),String.valueOf(Temperature),Toast.LENGTH_SHORT).show();
 		// Toast.makeText(getApplicationContext(),readStringValues[0],Toast.LENGTH_SHORT).show();
+		// Toast.makeText(getApplicationContext(),String.valueOf(readStringValues[1].length()),Toast.LENGTH_SHORT).show();
 		//Toast.makeText(getApplicationContext(), String.valueOf(CVSTATE),Toast.LENGTH_SHORT).show();
 		//if(readStringValues[0].length()>0) Temperature = (float) (Float.valueOf(readStringValues[0]));
 		//else  Temperature = 11;
@@ -600,23 +570,24 @@ public class MainActivity extends Activity {
 		 {	
 			tvTemp.setText(String.valueOf(readStringValues[1]).trim() + " °C");
 			Temperature = (float) (Float.valueOf(readStringValues[1]));
+			Temperature -= 2.5; //correctiefactor i.v.m. afwijzking arduino 
 			//Toast.makeText(getApplicationContext(),String.valueOf(userSetpoint)+ "..." + String.valueOf(Temperature),Toast.LENGTH_SHORT).show();
 		
-			if ( (spStartTeller > 4) && (SPSTATE == false) )
-			{	
+			if ( (spStartTeller > 10) && (SPSTATE == false) )
+			 {	
 			  userSetpoint = Math.round(Temperature)- 0.5f;
 			  spTemp.setText(String.valueOf(userSetpoint));
 			  //oldTemperature = Temperature;
 			  SPSTATE = true;
-			  //Toast.makeText(getApplicationContext(),String.valueOf(spStartTeller)+ SPSTATE,Toast.LENGTH_SHORT).show();
+			  Toast.makeText(getApplicationContext(),String.valueOf(spStartTeller)+ SPSTATE,Toast.LENGTH_SHORT).show();
 			 }
-	      if(spStartTeller < 6) spStartTeller++;
+	      if(spStartTeller <= 20) spStartTeller++;
 	     }
-		else
-		 { 	
-		  Temperature = 11;
+	//	else
+	//	 { 	
+	//		if(readStringValues[1].length() != 4) Temperature = 11;
 		  //userSetpoint = 10;
-		 }  
+	//	 }  
 		
 		/*
 		if(SPSTATE)
@@ -628,38 +599,32 @@ public class MainActivity extends Activity {
 		*/
 		
 		try {
-		if ( ((float) userSetpoint > (float) Temperature) && CVSTATE == false)
-		//if ((float) userSetpoint > (float) Temperature)	 
-		  {
-			cvOn();
-			//float divTemperature = oldTemperature - Temperature;
-			//if (divTemperature < 0.0f) divTemperature *= -1.0f;
-			//if(divTemperature >= 0.5f) cvOn();
-			//oldTemperature = Temperature;
-			//else tvTemp.setText("No Server!!");
-		   } 
-		  //if ((float) userSetpoint <= Temperature && CVSTATE == true)
-		//if ((float) userSetpoint <= (float) Temperature) cvOff();
-		  if ( ((float) userSetpoint <= (float) Temperature) && CVSTATE == true) cvOff();	
+			if ( ((float) userSetpoint > (float) Temperature) && CVSTATE == false) cvOn();
+			if ( ((float) userSetpoint <= (float) Temperature) && CVSTATE == true) cvOff();
 		} catch (Exception e){Log.d(TAG, "setPoint error"); e.printStackTrace();}; 
-		
+		if(CVSTATE && cvStateTeller >= 10)
+		 {	
+		  commandArduino(cv_server_url + "/?cmd=CVaan");/*tvTemp.setText("Server Oke!!");*/
+		  cvStateTeller = 0;
+		 }
+		cvStateTeller++;
 	}
 	
 	//Functie CV Inschakelen
 	public void cvOn() {
 	 spTemp.setTextColor(Color.RED);
 	 spTemp.setText(String.valueOf(userSetpoint));
-	 btnKamer1.setBackgroundColor(Color.RED);
+	 ledCV.setBackgroundColor(Color.RED);
 	 btnPlus.setBackgroundColor(Color.RED);
 	 btnMin.setBackgroundColor(Color.WHITE);
 	 //seekBar.setBackgroundColor(Color.RED);
 	 //seekBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-	 btnKamer1.setText("CV ON");
-	 if (CVSTATE == false)
-	  {	
+	 ledCV.setText("CV ON");
+	// if (CVSTATE == false)
+	//  {	
 	   mMediaPlayer.start();
 	   commandArduino(cv_server_url + "/?cmd=CVaan");/*tvTemp.setText("Server Oke!!");*/
-	  } 
+	 // } 
 	 CVSTATE = true;
 	}
 	
@@ -667,13 +632,14 @@ public class MainActivity extends Activity {
 	public void cvOff(){
 	 spTemp.setTextColor(Color.WHITE);
 	 spTemp.setText(String.valueOf(userSetpoint));
-	 btnKamer1.setBackgroundColor(Color.WHITE);
+	 ledCV.setBackgroundColor(Color.WHITE);
 	 btnMin.setBackgroundColor(Color.WHITE);
 	 btnPlus.setBackgroundColor(Color.WHITE);
 	 //seekBar.setBackgroundColor(Color.WHITE);
 	 //seekBar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-	 btnKamer1.setText("CV OFF");
-	 if(CVSTATE == true) commandArduino(cv_server_url + "/?cmd=CVuit");
+	 ledCV.setText("CV OFF");
+	 //if(CVSTATE == true) 
+	 commandArduino(cv_server_url + "/?cmd=CVuit");
 	 CVSTATE = false;
 	 //else tvTemp.setText("No Server!!");
 	}
@@ -685,7 +651,7 @@ public class MainActivity extends Activity {
 	 btnPlus.setBackgroundColor(Color.BLUE);
 	 //seekBar.setBackgroundColor(Color.WHITE);
 	 //seekBar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-	 btnKamer1.setText("CV OFF");
+	 ledCV.setText("CV OFF");
 	 if(CVSTATE == true) commandArduino(cv_server_url + "/?cmd=CVuit");
 	 CVSTATE = false;
 	 userSetpoint = 10;
@@ -698,18 +664,22 @@ public class MainActivity extends Activity {
 	
 	
 	//Functie om te communieren met arduino serv er die aan CV hangt
-	public boolean commandArduino(String url) {
+	public void commandArduino(String url) {
+		
+	if(BTCONNECT)
+	 {		
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
 			httpclient.execute(new HttpGet(url)); // was
 			CVSERVER = true;
 			Toast.makeText(getApplicationContext(), "CV OK", Toast.LENGTH_SHORT).show();
-			return true;
+			//return true;
 		 } catch (Exception e) {
 			Toast.makeText(getApplicationContext(), "No Server available", Toast.LENGTH_SHORT).show();
 			CVSERVER = false;
-			return false;
+			//return false;
 		 }
+	 }	
 	}
 	
 

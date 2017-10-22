@@ -14,7 +14,7 @@
     >   
 	
 		<Button
-	        android:id="@+id/button_kamer1"
+	        android:id="@+id/ledCV"
 	       	style="@style/ButtonText"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
 	        android:textColor="#000000" />
 	    
 	    <Button
-	 	    android:id="@+id/button_kamer2"
+	 	    android:id="@+id/ledMove"
 	 	    style="@style/ButtonText"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
 	        android:textColor="#000000" />
 		
 		<Button
-	 	    android:id="@+id/button_kamer3"
+	 	    android:id="@+id/ledSmoke"
 	 	    style="@style/ButtonText"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
